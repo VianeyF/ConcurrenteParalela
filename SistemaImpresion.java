@@ -1,19 +1,12 @@
-import java.util.concurrent.Semaphore;
-
 class Impresora{
-    private Semaphore semaforo = new Semaphore(1);
-
-    void imprimir (String trabajo){
+    synchronized void imprimir (String trabajo){
+        System.out.println("Imprimiendo:"+trabajo);
         try{
-            semaforo.acquire();
-            System.out.println("Imprimiendo:"+trabajo);
-            Thread.sleep(2000);
-            System.out.println("Trabajo completado"+trabajo);
+            Thread.sleep(millis:2000);
         }catch(InterruptedException e){
             System.out.println(e);
-        }finally{
-            semaforo.release();
         }
+        System.out.println("Trabajo completado:"+trabajo);
     }
 }
 
@@ -27,17 +20,17 @@ class Usuario extends Thread{
     }
 
     public void run(){
-        impresora.imprimir(trabajo);
-    }
+        impresora.imprimir(trabajo);     
+    }   
 }
 
-public class SistemaImpresionSemaph{
-    public static void main (String[] args){
+public class SistemaImpresion{
+    public static void main(String[] args){
         Impresora impresora = new Impresora();
 
-        Usuario usuario1 = new Usuario (impresora, "Documento1");
-        Usuario usuario2 = new Usuario (impresora, "Documento2");
-        Usuario usuario3 = new Usuario (impresora, "Documento3");
+        Usuario usuario1 = new Usuario (impresora, trabajo, "Documento1");
+        Usuario usuario2 = new Usuario (impresora, trabajo, "Documento2");
+        Usuario usuario3 = new Usuario (impresora, trabajo, "Documento3");
 
         usuario1.start();
         usuario2.start();
@@ -52,8 +45,5 @@ public class SistemaImpresionSemaph{
         }
 
         System.out.println("Todos los trabajos han sido procesados");
-
-
-}
-
+    }
 }
